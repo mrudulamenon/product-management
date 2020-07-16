@@ -12,14 +12,14 @@ export class ProductService {
   }
   newProduct(item){
     return this.http.post("http://localhost:3000/insert",{"product":item})
-    .subscribe(data => {console.log(data)})
+    .subscribe(data => {console.log(data)});
   }
   editProduct(id){
     return this.http.get("http://localhost:3000/edit/"+id);
     }
   updateProduct(item){
     return this.http.post("http://localhost:3000/update",{"product":item})
-    .subscribe(data => {console.log("updateservice"+data)})
+    .subscribe(data => {console.log("updateservice"+data)});
   }
   deleteProduct(id){
     return this.http.get("http://localhost:3000/delete/"+id);

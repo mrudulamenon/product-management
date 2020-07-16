@@ -1,52 +1,104 @@
-<div class="card">
-    <form (ngSubmit)="UpdateProduct()">
-        <div class="card-header">
-            <h3>{{title}}</h3>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td><label>Product Id</label></td>
-                            <td><input type="text" name="p_id" [(ngModel)]="productItem.productId"/></td>
-                        </tr>
-                        <tr>
-                            <td><label>Product Name</label></td>
-                            <td><input type="text" name="p_name" [(ngModel)]="productItem.productName"/></td>
-                        </tr>
-                        <tr>
-                            <td><label>Product Code</label></td>
-                            <td><input type="text" name="p_code" [(ngModel)]="productItem.productCode"/></td>
-                        </tr>
-                        <tr>
-                            <td><label>Release Date</label></td>
-                            <td><input type="text" name="p_date" [(ngModel)]="productItem.releaseDate"/></td>
-                        </tr>
-                        <tr>
-                            <td><label>Product Description</label></td>
-                            <td><input type="text" name="p_desc" [(ngModel)]="productItem.description"/></td>
-                        </tr>
-                        <tr>
-                            <td><label>Product Price</label></td>
-                            <td><input type="text" name="p_price" [(ngModel)]="productItem.price"/></td>
-                        </tr>
-                        <tr>
-                            <td><label>Product Start rating</label></td>
-                            <td><input type="text" name="p_rating" [(ngModel)]="productItem.starRating"/></td>
-                        </tr>
-                        <tr>
-                            <td><label>Product imageUrl</label></td>
-                            <td><input type="text" name="p_image" [(ngModel)]="productItem.imageUrl"/></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td><input type="submit" value="Submit"/></td>
-                        </tr>
-                    </tbody>
-                </table>
+<div class="py-5">
+    <div class="row">
+        <div class="col-md-6-lg-4-sm-10 mx-auto">
+            <div class="card">
+                <form class="form" #newPro="ngForm" (ngSubmit)="UpdateProduct()">
+                    <div class="card-header">
+                        <h3>{{title}}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>Fields marked <span class="text-danger">*</span> are mandatory</tr>
+                                    <tr>
+                                        <td><label>Product Id</label><span class="text-danger">*</span></td>
+                                        <td><input type="text" name="p_id" [(ngModel)]="productItem.productId"
+                                                class="form-control rounded-0" #p_id="ngModel"
+                                                [class.is-invalid]="p_id.invalid && p_id.touched" pattern="^[0-9]+$"
+                                                required />                                            
+                                        <small class="text-danger" [class.d-none]="p_id.valid || p_id.untouched">Enter
+                                            a number</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Product Name</label><span class="text-danger">*</span></td>
+                                        <td><input type="text" name="p_name" [(ngModel)]="productItem.productName"
+                                             class="form-control rounded-0" #p_name="ngModel"
+                                            [class.is-invalid]="p_name.invalid && p_name.touched" 
+                                            required />                                            
+                                    <small class="text-danger" [class.d-none]="p_name.valid || p_name.untouched">Enter
+                                        a name</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Product Code</label><span class="text-danger">*</span></td>
+                                        <td><input type="text" name="p_code" [(ngModel)]="productItem.productCode"  
+                                            class="form-control rounded-0" #p_code="ngModel"
+                                            [class.is-invalid]="p_code.invalid && p_code.touched" pattern="^\S+$"
+                                            required />                                            
+                                    <small class="text-danger" [class.d-none]="p_code.valid || p_code.untouched">Enter
+                                        a Product Code (Space not allowed)</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Release Date</label><span class="text-danger">*</span></td>
+                                        <td><input type="date" name="p_date" [(ngModel)]="productItem.releaseDate" 
+                                            class="form-control rounded-0" #p_date="ngModel"
+                                            [class.is-invalid]="p_date.invalid && p_date.touched" pattern="^[a-z0-9._%+-]+$"
+                                            required />                                            
+                                    <small class="text-danger" [class.d-none]="p_date.valid || p_date.untouched">Enter
+                                        a date</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Product Description</label></td>
+                                        <td><input type="text" name="p_desc" [(ngModel)]="productItem.description" 
+                                            class="form-control rounded-0" #p_desc="ngModel"
+                                            [class.is-invalid]="p_desc.invalid && p_desc.touched" />                                            
+                                    <small class="text-danger" [class.d-none]="p_desc.valid || p_desc.untouched">Enter
+                                        a description</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Product Price</label><span class="text-danger">*</span></td>
+                                        <td><input type="text" name="p_price" [(ngModel)]="productItem.price" 
+                                            class="form-control rounded-0" #p_price="ngModel"
+                                            [class.is-invalid]="p_price.invalid && p_price.touched" pattern="^[0-9]+\.[0-9]{2}$"
+                                            required />                                            
+                                    <small class="text-danger" [class.d-none]="p_price.valid || p_price.untouched">Enter
+                                        a number in the form 10.00</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Product Star rating</label></td>
+                                        <td><input type="text" name="p_rating" [(ngModel)]="productItem.starRating" 
+                                            class="form-control rounded-0" #p_rating="ngModel"
+                                            [class.is-invalid]="p_rating.invalid && p_rating.touched" pattern="^[1-5]{1}$"/>                                            
+                                    <small class="text-danger" [class.d-none]="p_rating.valid || p_rating.untouched">Enter
+                                        a number from 1 to 5</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Product imageUrl</label></td>
+                                        <td><input type="text" name="p_image" [(ngModel)]="productItem.imageUrl" 
+                                            class="form-control rounded-0" #p_image="ngModel"
+                                            [class.is-invalid]="p_image.invalid && p_image.touched" pattern='^(ftp|http|https):\/\/[^ "]+$'/>                                            
+                                    <small class="text-danger" [class.d-none]="p_image.valid || p_image.untouched">Enter
+                                        a valid url</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><input type="submit" [disabled]="newPro.form.invalid" class="btn btn-primary" value="Submit" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </form>
             </div>
         </div>
-
-    </form>
+    </div>
 </div>
