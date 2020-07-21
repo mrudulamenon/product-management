@@ -10,6 +10,9 @@ export class ProductService {
   getProducts(){
     return this.http.get("http://localhost:3000/products");
   }
+  addProductPage(){
+    return this.http.get("http://localhost:3000/addpage");
+  }
   newProduct(item){
     return this.http.post("http://localhost:3000/insert",{"product":item})
     .subscribe(data => {console.log(data)});

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductModel } from './product.model';
 import { ProductService } from '../product.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-product-list',
@@ -17,10 +18,14 @@ export class ProductListComponent implements OnInit {
   imageMargin: number = 2;
   showImage: boolean = false;
   //creating service object for calling getProducts()
-  constructor(private productService: ProductService,private router: Router) { }
+  constructor(private productService: ProductService,private _auth: AuthService,private router: Router) { }
   toggleImage(): void {
     this.showImage = !this.showImage;
   }
+  loggedIn(){
+    return this._auth.loggedIn();
+  }
+ 
   ngOnInit(): void {
     //calling getProducts() and loading the products to products array
     this.productService.getProducts()

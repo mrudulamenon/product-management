@@ -19,8 +19,8 @@
                         <th>Available</th>
                         <th>Price</th>
                         <th>5 Star Rating</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <th *ngIf="loggedIn()">Edit</th>
+                        <th *ngIf="loggedIn()">Delete</th>
                     </tr>                    
                 </thead>
                 <tbody>
@@ -37,8 +37,8 @@
                         <td>{{ product.releaseDate }}</td>
                         <td>{{ product.price}}</td>
                         <td>{{ product.starRating}}</td>
-                        <td><a routerLink='/edit/{{product._id}}' class="btn btn-primary">Edit</a></td>
-                        <td><a (click)="deleteProduct(product._id)" style="color:white" class="btn btn-primary">Delete</a></td>
+                        <td *ngIf="loggedIn()" ><a routerLink='/edit/{{product._id}}' class="btn btn-primary">Edit</a></td>
+                        <td *ngIf="loggedIn()" ><a (click)="deleteProduct(product._id)" style="color:white" class="btn btn-primary">Delete</a></td>
                     </tr>
                 </tbody>
             </table>

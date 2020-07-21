@@ -5,11 +5,15 @@ import { NewProductComponent } from './new-product/new-product.component';
 import { EditProductComponent } from './edit-product/edit-product.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
-  {path:'',component:ProductListComponent},
-  {path:'add',component:NewProductComponent},
-  {path:'edit/:p_id',component:EditProductComponent},
+  {path:'',redirectTo:'products',pathMatch:'full'},
+  {path:'products',component:ProductListComponent,pathMatch:'full'},
+  {path:'add',component:NewProductComponent,
+canActivate:[AuthGuard]},
+  {path:'edit/:p_id',component:EditProductComponent,
+canActivate:[AuthGuard]},
   {path:'register',component:RegisterComponent},
   {path:'login',component:LoginComponent}
 ];

@@ -2,11 +2,27 @@ const express = require('express');
 const ProductData = require('./src/model/ProductData');
 const User = require('./src/model/User');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 var bodyparser = require('body-parser');
 var app = new express();
 app.use(cors());
 app.use(bodyparser.json());
 
+function verifyToken(req, res, next) {
+    if (!req.headers.authorization) {
+        return res.status(401).send('Unauthorized Request -1');
+    }
+    let token = req.headers.authorization.split(' ')[1];
+    if (token === 'null') {
+        return res.status(401).send('Unauthorized Request -2');
+    }
+    let payload = jwt.verify(token, 'secretKey')
+    if (!payload) {
+        return res.status(401).send('Unauthorized Request-3');
+    }
+    req.userId = payload.subject;
+    next();
+}
 app.get('/products', function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
@@ -15,11 +31,16 @@ app.get('/products', function (req, res) {
             res.send(products);
         });
 });
-app.post('/insert', function (req, res) {
+app.get('/addpage', verifyToken, function(req,res){
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
+    res.send("Add Product Page Authorisation");
+});
+app.post('/insert', verifyToken, function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
     console.log(req.body);
-    
+
     var product = {
         productId: req.body.product.productId,
         productName: req.body.product.productName,
@@ -33,7 +54,7 @@ app.post('/insert', function (req, res) {
     var product = new ProductData(product);
     product.save();
 });
-app.get('/delete/:id', function (req, res) {
+app.get('/delete/:id', verifyToken, function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
     const id = req.params.id;
@@ -46,7 +67,7 @@ app.get('/delete/:id', function (req, res) {
             // console.log("deleted"+deleted);
         });
 });
-app.get('/edit/:id', function (req, res) {
+app.get('/edit/:id', verifyToken, function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
     const id = req.params.id;
@@ -55,7 +76,7 @@ app.get('/edit/:id', function (req, res) {
             res.send(product);
         });
 });
-app.post('/update', function (req, res) {
+app.post('/update', verifyToken, function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
     console.log("reqbody" + req.body);
@@ -88,31 +109,51 @@ app.post('/update', function (req, res) {
 });
 
 app.post('/register', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
+
     let userData = req.body;
     let user = new User(userData);
     user.save((err, registeredUser) => {
-        if(err) {
+        if (err) {
             console.log(err);
         }
         else {
-            res.status(200).send(registeredUser);
+
+            let payload = { subject: user._id }
+            let token = jwt.sign(payload, 'secretKey')
+            res.status(200).send({ token })
+            // res.status(200).send(registeredUser);
         }
     });
 });
 
 app.post('/login', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
+
     let userData = req.body;
-    User.findOne({ email: userData.email }, (err, user) => {
+    console.log("inside login");
+    console.log(userData);
+    User.findOne({ email: userData.email } && { password: userData.password }, (err, user) => {
         if (err) {
+            console.log("Error");
             console.log(err);
         } else {
+            console.log("got user");
+            console.log(user);
             if (!user) {
-                res.status(401).send('Invalid Email')
+                console.log("Email Error");
+                res.status(401).send('Invalid Email');
             } else
                 if (user.password !== userData.password) {
-                    res.status(401).send('Invalid Password')
+                    console.log("Pswd Error");
+                    res.status(401).send('Invalid Password');
                 } else {
-                    res.status(200).send(user);
+                    let payload = { subject: user._id };
+                    let token = jwt.sign(payload, 'secretKey');
+                    res.status(200).send({ token });
+                    // res.status(200).send(user);
                 }
         }
     });

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -15,7 +14,13 @@ export class LoginComponent implements OnInit {
   //console.log(this.loginUserDetails);
   this._auth.loginUser(this.loginUserDetails)
     .subscribe(
-      res=>console.log(res),
+      res=>{
+        console.log(res);
+        console.log(res["token"]);
+        
+      localStorage.setItem('token',res["token"]);
+      this.router.navigate(['/']);    
+      },
       err=>console.log(err)  
       // res=>{
       //     alert("Success");
@@ -26,10 +31,7 @@ export class LoginComponent implements OnInit {
       //   }      
     );
     // alert("Success");
-    this.router.navigate(['/']);
-    
   }
   ngOnInit(): void {
   }
-
 }
